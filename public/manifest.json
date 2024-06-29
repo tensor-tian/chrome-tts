@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "TTS",
+  "description": "Webpage content to voice",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "tts.png"
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
