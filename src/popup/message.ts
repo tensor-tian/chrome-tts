@@ -1,6 +1,6 @@
 import type { P2C } from "../types";
 
-export async function send<T extends P2C.Message>(
+export async function sendToActiveTab<T extends P2C.Message>(
   msg: T["req"]
 ): Promise<T["resp"] | undefined> {
   const [tab] = await chrome.tabs.query({
@@ -15,4 +15,10 @@ export async function send<T extends P2C.Message>(
   });
   console.log("request:", JSON.stringify(msg), "response:", response);
   return response as T["resp"];
+}
+
+export async function sendToBackground(msg: unknown): Promise<unknown> {
+  const resp = await chrome.runtime.sendMessage(msg);
+  console.log("response from background: ", resp);
+  return resp;
 }

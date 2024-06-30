@@ -98,13 +98,10 @@ class Speaker {
     };
   }
   setState(options: Partial<State>) {
-    const opts = pick(options, ["pitch", "rate", "volume"]);
-    if (Object.keys(opts).length > 0) {
-      this.state.options = {
-        ...this.state.options,
-        ...opts,
-      };
-    }
+    this.state.options = {
+      ...this.state.options,
+      ...pick(options, ["pitch", "rate", "volume"]),
+    };
     if (options.voiceURI) {
       this.state.options.voice = this.voices.find(
         (v) => v.voiceURI === options.voiceURI
@@ -113,13 +110,10 @@ class Speaker {
     if (options.progress) {
       this.i = options.progress.index;
     }
-    const update = pick(options, ["paused", "selector"]);
-    if (Object.keys(update).length > 0) {
-      this.state = {
-        ...this.state,
-        ...update,
-      };
-    }
+    this.state = {
+      ...this.state,
+      ...pick(options, ["paused", "selector"]),
+    };
   }
 
   static async getInstance(): Promise<Speaker> {
@@ -171,6 +165,7 @@ class Speaker {
   }
   async play() {
     let ok = true;
+    // https://github.com/leaonline/easy-speech/blob/HEAD/API.md
     while (ok && !this.state.paused && this.i < this.list.length) {
       const text = this.list[this.i];
       ok = await EasySpeech.speak({ ...this.state.options, text })
@@ -179,7 +174,9 @@ class Speaker {
           console.log("speak error:", err);
           return false;
         });
-      this.i++;
+      if (!this.state.paused) {
+        this.i++;
+      }
     }
   }
   start() {
@@ -187,6 +184,7 @@ class Speaker {
   }
   pause() {
     this.state.paused = true;
+    EasySpeech.cancel();
   }
 }
 

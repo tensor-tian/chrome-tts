@@ -6,7 +6,7 @@ import {
 } from "react-icons/tb";
 import Input from "@mui/material/Input";
 import Button from "@mui/material/Button";
-import { send } from "./message";
+import { sendToActiveTab } from "./message";
 import { ChangeEvent } from "react";
 import MuiSlider from "@mui/material/Slider";
 import { P2C, State, Voice } from "../types";
@@ -186,7 +186,7 @@ function App() {
     }
   >();
   const togglePlay = useCallback(async () => {
-    send<P2C.PlayMsg>({
+    sendToActiveTab<P2C.PlayMsg>({
       action: "play",
       data: selector,
     }).then((resp) => {
@@ -197,7 +197,7 @@ function App() {
     });
   }, [selector]);
   const update = useCallback((state: Partial<State>) => {
-    send<P2C.SetStateMsg>({
+    sendToActiveTab<P2C.SetStateMsg>({
       action: "set-state",
       data: state,
     }).then((resp) => {
@@ -209,7 +209,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    send<P2C.GetStateMsg>({
+    sendToActiveTab<P2C.GetStateMsg>({
       action: "get-state",
       data: null,
     }).then((resp) => {
